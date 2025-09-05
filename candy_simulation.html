@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List vs Iterator - Hộp Kẹo vs Máy Phát Kẹo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .candy {
+            animation: bounce 0.5s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-purple-800 mb-4">
+                🍭 List vs Iterator 🍬
+            </h1>
+            <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+                Học lập trình qua ví dụ hộp kẹo và máy phát kẹo!
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <!-- List - Candy Box -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 border-4 border-yellow-300">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-orange-600 mb-2">
+                        📦 List = Hộp Kẹo
+                    </h2>
+                    <p class="text-lg text-gray-600">
+                        Muốn lấy viên nào cũng được!
+                    </p>
+                </div>
+
+                <!-- Candy Box -->
+                <div class="relative bg-gradient-to-br from-yellow-200 to-orange-300 rounded-2xl p-6 border-4 border-yellow-400 mb-6">
+                    <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-yellow-400 px-4 py-1 rounded-full border-2 border-yellow-500">
+                        <span class="text-sm font-bold text-yellow-800">CANDY BOX</span>
+                    </div>
+                    
+                    <!-- Candies Grid -->
+                    <div class="grid grid-cols-4 gap-3 mt-4" id="candyBox">
+                        <!-- Candies will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="text-center mb-4">
+                    <p class="text-sm text-gray-600 mb-3">Chọn kẹo bất kỳ:</p>
+                    <div class="flex flex-wrap justify-center gap-2" id="listButtons">
+                        <!-- Buttons will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Selected Candy Display -->
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-xl p-4 border-2 border-purple-300">
+                        <p class="text-sm text-purple-700 mb-2">Kẹo đã chọn:</p>
+                        <div class="text-4xl" id="selectedCandy">🤔</div>
+                        <p class="text-xs text-purple-600 mt-1" id="selectedIndex">Chưa chọn</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Iterator - Candy Machine -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 border-4 border-blue-300">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-blue-600 mb-2">
+                        🎰 Iterator = Máy Phát Kẹo
+                    </h2>
+                    <p class="text-lg text-gray-600">
+                        Bấm thì ra từng viên!
+                    </p>
+                </div>
+
+                <!-- Candy Machine -->
+                <div class="relative bg-gradient-to-br from-blue-200 to-indigo-300 rounded-2xl p-6 border-4 border-blue-400 mb-6">
+                    <!-- Machine Top -->
+                    <div class="bg-red-400 rounded-t-xl p-2 -mx-6 -mt-6 mb-4 border-b-4 border-red-500">
+                        <div class="text-center text-white font-bold">CANDY MACHINE</div>
+                    </div>
+                    
+                    <!-- Display Window -->
+                    <div class="bg-gray-800 rounded-xl p-4 mb-4 border-4 border-gray-600">
+                        <div class="bg-black rounded-lg p-3 text-center">
+                            <div class="text-4xl mb-2" id="currentCandy">❓</div>
+                            <div class="text-green-400 text-sm font-mono" id="iteratorStatus">
+                                Vị trí: 0/8
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Machine Button -->
+                    <div class="text-center">
+                        <button 
+                            id="nextButton"
+                            class="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-full border-4 border-red-600 shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95"
+                        >
+                            🔴 BẤM ĐỂ LẤY KẸO
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Iterator Info -->
+                <div class="bg-green-100 rounded-xl p-4 border-2 border-green-300">
+                    <p class="text-sm text-green-700 mb-2">Trạng thái Iterator:</p>
+                    <div class="text-xs text-green-600" id="iteratorInfo">
+                        Sẵn sàng bắt đầu
+                    </div>
+                    <button 
+                        id="resetButton"
+                        class="mt-3 bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded-full transition-colors"
+                    >
+                        🔄 Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <div class="mt-12 bg-white rounded-3xl shadow-2xl p-8 border-4 border-purple-300 max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-purple-800 mb-6 text-center">
+                🎓 Giải Thích Khái Niệm
+            </h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-yellow-50 rounded-xl p-6 border-2 border-yellow-300">
+                    <h4 class="text-xl font-bold text-orange-600 mb-3">📦 List (Danh Sách)</h4>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li>✅ Truy cập ngẫu nhiên (random access)</li>
+                        <li>✅ Có thể lấy phần tử bất kỳ</li>
+                        <li>✅ Biết được tổng số phần tử</li>
+                        <li>✅ Có thể lặp lại nhiều lần</li>
+                        <li>💾 Tốn bộ nhớ lưu tất cả</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-blue-50 rounded-xl p-6 border-2 border-blue-300">
+                    <h4 class="text-xl font-bold text-blue-600 mb-3">🎰 Iterator (Bộ Lặp)</h4>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li>➡️ Truy cập tuần tự (sequential)</li>
+                        <li>➡️ Chỉ lấy từng phần tử một</li>
+                        <li>❓ Không biết tổng số phần tử</li>
+                        <li>🔄 Cần reset để lặp lại</li>
+                        <li>💡 Tiết kiệm bộ nhớ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Candy types
+        const candies = ['🍭', '🍬', '🍫', '🧁', '🍩', '🍪', '🎂', '🍰'];
+        let currentIteratorIndex = 0;
+        let iteratorFinished = false;
+
+        // Initialize candy box
+        function initializeCandyBox() {
+            const candyBox = document.getElementById('candyBox');
+            const listButtons = document.getElementById('listButtons');
+            
+            candyBox.innerHTML = '';
+            listButtons.innerHTML = '';
+            
+            candies.forEach((candy, index) => {
+                // Add candy to box
+                const candyDiv = document.createElement('div');
+                candyDiv.className = 'text-3xl text-center p-2 bg-white rounded-lg border-2 border-yellow-200 hover:border-yellow-400 cursor-pointer transition-all duration-200 hover:scale-110';
+                candyDiv.textContent = candy;
+                candyDiv.onclick = () => selectCandy(index);
+                candyBox.appendChild(candyDiv);
+                
+                // Add button
+                const button = document.createElement('button');
+                button.className = 'bg-orange-400 hover:bg-orange-500 text-white text-xs font-bold py-1 px-2 rounded-full transition-colors';
+                button.textContent = index;
+                button.onclick = () => selectCandy(index);
+                listButtons.appendChild(button);
+            });
+        }
+
+        // Select candy from list
+        function selectCandy(index) {
+            const selectedCandy = document.getElementById('selectedCandy');
+            const selectedIndex = document.getElementById('selectedIndex');
+            
+            selectedCandy.textContent = candies[index];
+            selectedCandy.className = 'text-4xl candy';
+            selectedIndex.textContent = `Vị trí: ${index}`;
+            
+            // Highlight selected candy in box
+            const candyBoxItems = document.querySelectorAll('#candyBox > div');
+            candyBoxItems.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('glow');
+                    setTimeout(() => item.classList.remove('glow'), 1000);
+                } else {
+                    item.classList.remove('glow');
+                }
+            });
+        }
+
+        // Iterator next function
+        function nextCandy() {
+            const currentCandy = document.getElementById('currentCandy');
+            const iteratorStatus = document.getElementById('iteratorStatus');
+            const iteratorInfo = document.getElementById('iteratorInfo');
+            const nextButton = document.getElementById('nextButton');
+            
+            if (currentIteratorIndex < candies.length) {
+                // Show current candy
+                currentCandy.textContent = candies[currentIteratorIndex];
+                currentCandy.className = 'text-4xl mb-2 fade-in';
+                
+                // Update status
+                iteratorStatus.textContent = `Vị trí: ${currentIteratorIndex + 1}/${candies.length}`;
+                iteratorInfo.textContent = `Đã lấy kẹo ${candies[currentIteratorIndex]} tại vị trí ${currentIteratorIndex}`;
+                
+                currentIteratorIndex++;
+                
+                // Check if finished
+                if (currentIteratorIndex >= candies.length) {
+                    iteratorFinished = true;
+                    nextButton.textContent = '❌ HẾT KẸO';
+                    nextButton.className = 'bg-gray-500 text-white font-bold py-4 px-8 rounded-full border-4 border-gray-600 shadow-lg cursor-not-allowed';
+                    iteratorInfo.textContent = 'Iterator đã kết thúc! Cần reset để bắt đầu lại.';
+                }
+            }
+        }
+
+        // Reset iterator
+        function resetIterator() {
+            currentIteratorIndex = 0;
+            iteratorFinished = false;
+            
+            const currentCandy = document.getElementById('currentCandy');
+            const iteratorStatus = document.getElementById('iteratorStatus');
+            const iteratorInfo = document.getElementById('iteratorInfo');
+            const nextButton = document.getElementById('nextButton');
+            
+            currentCandy.textContent = '❓';
+            iteratorStatus.textContent = 'Vị trí: 0/8';
+            iteratorInfo.textContent = 'Sẵn sàng bắt đầu';
+            
+            nextButton.textContent = '🔴 BẤM ĐỂ LẤY KẸO';
+            nextButton.className = 'bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-full border-4 border-red-600 shadow-lg transform transition-all duration-150 hover:scale-105 active:scale-95';
+        }
+
+        // Event listeners
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (!iteratorFinished) {
+                nextCandy();
+                // Add shake effect to machine
+                document.querySelector('.bg-gradient-to-br.from-blue-200').classList.add('shake');
+                setTimeout(() => {
+                    document.querySelector('.bg-gradient-to-br.from-blue-200').classList.remove('shake');
+                }, 500);
+            }
+        });
+
+        document.getElementById('resetButton').addEventListener('click', resetIterator);
+
+        // Initialize
+        initializeCandyBox();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97a6f564e4089b44',t:'MTc1NzA4ODIyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
