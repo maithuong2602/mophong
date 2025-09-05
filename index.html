@@ -11,25 +11,6 @@
         body {
             font-family: 'Nunito', sans-serif;
         }
-
-        .simulation-container {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .candy {
-            animation: bounce 0.5s ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
@@ -45,12 +26,12 @@
 
         <!-- Simulation Buttons Section -->
         <div class="flex flex-wrap justify-center gap-4 mb-10">
-            <button
-                id="btn-simulation-1"
+            <a
+                href="candy_simulation.html"
                 class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-300"
             >
                 Mô phỏng Kẹo (Số 1)
-            </button>
+            </a>
             <!-- Các nút khác sẽ được thêm vào đây -->
         </div>
 
@@ -59,84 +40,7 @@
             <p id="placeholder-text" class="text-gray-400 text-lg">
                 Chọn một nút để hiển thị mô phỏng.
             </p>
-
-            <!-- Simulation 1: Candy Simulation -->
-            <div id="simulation-1-container" class="simulation-container">
-                <div class="text-center mb-6">
-                    <h2 class="text-3xl font-bold text-purple-600 mb-2">
-                        🍬 Mô phỏng Hộp Kẹo
-                    </h2>
-                    <p class="text-md text-gray-600">
-                        Bấm vào một viên kẹo để lấy nó ra.
-                    </p>
-                </div>
-                <div id="candy-box" class="grid grid-cols-4 gap-4 max-w-md mx-auto">
-                    <!-- Candies will be rendered here -->
-                </div>
-                <div class="text-center mt-6">
-                    <p class="text-sm text-gray-500">Kẹo đã chọn:</p>
-                    <div id="selected-candy" class="text-5xl my-2">🤔</div>
-                </div>
-            </div>
-
         </div>
     </div>
-
-    <script>
-        // Array of candy emojis
-        const candies = ['🍭', '🍬', '🍫', '🧁', '🍩', '🍪', '🎂', '🍰'];
-
-        // Get references to DOM elements
-        const placeholderText = document.getElementById('placeholder-text');
-        const simulationArea = document.getElementById('simulation-area');
-        const simulation1Container = document.getElementById('simulation-1-container');
-        const candyBox = document.getElementById('candy-box');
-        const selectedCandy = document.getElementById('selected-candy');
-        const btnSimulation1 = document.getElementById('btn-simulation-1');
-
-        // Function to show a specific simulation and hide others
-        function showSimulation(simulationId) {
-            // Hide all simulation containers
-            const allSimulations = document.querySelectorAll('.simulation-container');
-            allSimulations.forEach(sim => sim.style.display = 'none');
-            placeholderText.style.display = 'none';
-
-            // Show the requested simulation
-            const targetSimulation = document.getElementById(simulationId);
-            if (targetSimulation) {
-                targetSimulation.style.display = 'block';
-            }
-        }
-
-        // Event listener for the candy simulation button
-        btnSimulation1.addEventListener('click', () => {
-            showSimulation('simulation-1-container');
-        });
-
-        // Function to render candies in the box
-        function renderCandies() {
-            candyBox.innerHTML = ''; // Clear existing candies
-            candies.forEach(candy => {
-                const candyDiv = document.createElement('div');
-                candyDiv.textContent = candy;
-                candyDiv.className = 'text-4xl text-center p-3 rounded-xl bg-yellow-200 border-2 border-yellow-300 cursor-pointer transition-transform hover:scale-110 active:scale-90';
-                candyDiv.addEventListener('click', () => {
-                    selectedCandy.textContent = candy;
-                    selectedCandy.className = 'text-5xl my-2 candy';
-                    setTimeout(() => { selectedCandy.className = 'text-5xl my-2'; }, 500);
-                });
-                candyBox.appendChild(candyDiv);
-            });
-        }
-        
-        // Initial setup on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCandies();
-            // Initially, show only the placeholder text
-            showSimulation('placeholder-text');
-            placeholderText.style.display = 'block';
-        });
-        
-    </script>
 </body>
 </html>
